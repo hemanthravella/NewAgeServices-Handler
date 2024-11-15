@@ -1,0 +1,81 @@
+
+1. Start a New Project
+django-admin startproject <project_name>
+```
+- Creates a new Django project with the specified name.
+
+2. Start a New App
+python manage.py startapp <app_name>
+```
+- Creates a new app within the project.
+
+3. Run Development Server
+python manage.py runserver
+```
+- Starts the development server on `http://127.0.0.1:8000/`.
+
+4. Change Development Server Port
+python manage.py runserver <port_number>
+```
+- Runs the server on a specified port.
+
+5. Create Database Migrations
+python manage.py makemigrations
+```
+- Creates migration files based on model changes.
+
+6. Apply Migrations
+python manage.py migrate
+```
+- Applies migrations to the database.
+
+7. Create Superuser
+python manage.py createsuperuser
+```
+- Creates an admin user to access the Django admin site.
+
+8. Open Django Shell
+python manage.py shell
+```
+- Opens an interactive Python shell with Django settings loaded.
+
+9. Check for Issues (Linting)
+python manage.py check
+```
+- Checks the project for common issues without running the server.
+
+10. Generate SQL for Migrations
+python manage.py sqlmigrate <app_name> <migration_number>
+```
+- Displays SQL statements for a specific migration.
+
+11. Run Tests
+python manage.py test
+```
+- Runs all tests within the project.
+
+12. Clear Sessions
+python manage.py clearsessions
+```
+- Removes expired sessions from the database.
+
+13. Show URLs
+python manage.py show_urls
+```
+- Displays a list of all registered URLs (requires `django-extensions` package).
+
+14. Collect Static Files
+python manage.py collectstatic
+```
+- Collects static files from each app into the `STATIC_ROOT` directory for production.
+
+15. Run Custom Commands
+python manage.py <custom_command>
+```
+- Runs any custom management command defined in the project.
+
+---
+
+You can also get detailed help for each command by running:
+python manage.py <command> --help
+```
