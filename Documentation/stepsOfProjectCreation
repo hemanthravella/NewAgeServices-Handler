@@ -1,1 +1,6 @@
 1. Create app
+2. Created app which will have custom commands
+3. added MIGRATION_MODULES in settings.py to have all the migrations in one place.
+4. Create a custom command to wait_for_db
+5. added unit tests for the custom command
+6. added to run the wait_for_db command as part of docker compose
