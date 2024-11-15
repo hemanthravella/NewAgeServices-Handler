@@ -1,0 +1,96 @@
+
+1. Build Docker Image from Dockerfile
+docker build -t <image_name> .
+```
+- Builds an image from the Dockerfile in the current directory and tags it with a specified name.
+
+2. Build Docker Compose Services
+docker-compose build
+```
+- Builds all services defined in the docker-compose.yml file.
+
+3. Run Docker Compose Services
+docker-compose up
+```
+- Starts up all services defined in the docker-compose.yml file.
+
+4. Run Docker Compose in Detached Mode
+docker-compose up -d
+```
+- Starts services in the background, allowing the terminal to be used for other commands.
+
+5. Stop Docker Compose Services
+docker-compose down
+```
+- Stops and removes containers, networks, and volumes created by `docker-compose up`.
+
+6. View Running Containers
+docker ps
+```
+- Lists all currently running containers.
+
+7. List All Containers (Including Stopped)
+docker ps -a
+```
+- Lists all containers, including those that are stopped.
+
+8. Start a Shell in a Running Container
+docker exec -it <container_name_or_id> /bin/sh
+```
+- Opens an interactive shell session inside a running container.
+
+9. View Docker Compose Logs
+docker-compose logs
+```
+- Displays logs from all services in the docker-compose.yml file.
+
+10. View Real-Time Logs for a Service
+docker-compose logs -f <service_name>
+```
+- Follows real-time logs for a specific service.
+
+11. Stop a Running Container
+docker stop <container_name_or_id>
+```
+- Stops a running container.
+
+12. Remove a Stopped Container
+docker rm <container_name_or_id>
+```
+- Removes a container that is stopped.
+
+13. Remove All Stopped Containers
+docker container prune
+```
+- Removes all containers that are currently stopped.
+
+14. Remove an Image
+docker rmi <image_name_or_id>
+```
+- Deletes a specified image from the local repository.
+
+15. Clean Up Unused Images, Containers, Volumes, and Networks
+docker system prune
+```
+- Frees up space by removing unused data, including stopped containers, unused images, and networks.
+
+16. Check Docker Compose Version
+docker-compose --version
+```
+- Displays the currently installed Docker Compose version.
+
+17. Restart a Specific Service in Docker Compose
+docker-compose restart <service_name>
+```
+- Restarts a specific service in the docker-compose.yml file.
+
+18. Scale a Service
+docker-compose up --scale <service_name>=<number>
+```
+- Runs multiple instances of a specific service.
+
+---
+
+You can get help with additional flags for any command by using:
+docker <command> --help
+```
