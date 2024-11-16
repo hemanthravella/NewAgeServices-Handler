@@ -13,3 +13,5 @@ Ref: https://docs.djangoproject.com/en/1.8/_modules/django/contrib/auth/models/ 
     1. Metal will hold the information about the model to use, fields Specifies the fields to include in the serialized representation
     2. extra_kwargs: Adds extra configurations for specific fields. REF: https://www.django-rest-framework.org/api-guide/serializers/#additional-keyword-arguments
     3. implement create and update REF: https://www.django-rest-framework.org/api-guide/serializers/#saving-instances
+11. user/views.py: for create url. we will be using generics which will create a post method and writes to db
+    REF : https://www.django-rest-framework.org/api-guide/generic-views/#generic-views
