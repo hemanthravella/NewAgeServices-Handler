@@ -15,3 +15,8 @@ Ref: https://docs.djangoproject.com/en/1.8/_modules/django/contrib/auth/models/ 
     3. implement create and update REF: https://www.django-rest-framework.org/api-guide/serializers/#saving-instances
 11. user/views.py: for create url. we will be using generics which will create a post method and writes to db
     REF : https://www.django-rest-framework.org/api-guide/generic-views/#generic-views
+================================================
+12. Use drf-spectacular app to generate docs and schema which are OpenAPI 3.0-compliant schemas
+13. add app in settings.py
+14. Update DEFAULT_SCHEMA_CLASS in the REST_FRAMEWORK to over ride the default schema generator DRF provides
+================================================
