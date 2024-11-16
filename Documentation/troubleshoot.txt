@@ -1,0 +1,13 @@
+List all apps:
+python manage.py shell
+
+from django.apps import apps
+app_list = [app.name for app in apps.get_app_configs()]
+print(app_list)
+====================================================================================
+from django.apps import apps
+for app in apps.get_app_configs():
+    print(f"App: {app.label}, Migrations Path: {app.path}/migrations")
+====================================================================================
+
+docker volume rm newageservices-handler_dev-db-data
