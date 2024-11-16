@@ -4,3 +4,5 @@
 4. Create a custom command to wait_for_db
 5. added unit tests for the custom command
 6. added to run the wait_for_db command as part of docker compose
+================================================
+7. Create a Customer User model inside the core app for auth and specify it in settings.py
