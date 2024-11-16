@@ -6,3 +6,10 @@
 6. added to run the wait_for_db command as part of docker compose
 ================================================
 7. Create a Customer User model inside the core app for auth and specify it in settings.py
+8. created User model and User Manger which extends AbstractBaseUser,PermissionsMixin.
+9.Implemented methods for CreateUser and Create SuperUser as it is customer user model now.
+Ref: https://docs.djangoproject.com/en/1.8/_modules/django/contrib/auth/models/ ----> class UserManager(BaseUserManager):
+10. create a serializer for User model
+    1. Metal will hold the information about the model to use, fields Specifies the fields to include in the serialized representation
+    2. extra_kwargs: Adds extra configurations for specific fields. REF: https://www.django-rest-framework.org/api-guide/serializers/#additional-keyword-arguments
+    3. implement create and update REF: https://www.django-rest-framework.org/api-guide/serializers/#saving-instances
