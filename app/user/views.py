@@ -38,10 +38,6 @@ class CreateStaffUserView(APIView):
     def post(self, request, *args, **kwargs):
         """Post method to create the staff user"""
         try:
-            print(f"user:{request.user.email}")
-            print(f"is_admin: {request.user.is_admin}")
-            print(f"is_superuser: {request.user.is_superuser}")
-            print(f"check: {not (request.user.is_admin or request.user.is_superuser)}")
             if not (request.user.is_admin or request.user.is_superuser):
                 raise PermissionDenied("Only admin/super users can create staff user")
             serializer = StaffUserSerializer(data=request.data)
