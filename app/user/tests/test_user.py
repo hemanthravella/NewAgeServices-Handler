@@ -139,6 +139,9 @@ class PrivateUserApiTests(TestCase):
             'first_name': self.user.first_name,
             'last_name': self.user.last_name,
             'email': self.user.email,
+            'is_staff':self.user.is_staff,
+            'is_admin':self.user.is_admin,
+            'is_superuser':self.user.is_superuser,
         })
 
     def test_post_me_not_allowed(self):

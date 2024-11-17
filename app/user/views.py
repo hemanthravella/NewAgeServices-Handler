@@ -18,7 +18,7 @@ from .serializers import UserSerializer, TokenAuthSerializer, StaffUserSerialize
 class CreateUserView(generics.CreateAPIView):
     """Creates a new user in the system"""
     serializer_class = UserSerializer
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
 
 class CreateStaffUserView(APIView):
@@ -98,12 +98,11 @@ class CreateTokenView(ObtainAuthToken):
 
 class ManageUserView(APIView):
     """Manage the authenticated user."""
-    serializer_class = UserSerializer
     authentication_classes = [authentication.TokenAuthentication]
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
         """Retrieve and return the authenticated user."""
-        serializer = UserSerializer(request.user)
+        serializer = StaffUserSerializer(request.user)
         return Response(serializer.data)
 
