@@ -31,3 +31,10 @@ Ref: https://docs.djangoproject.com/en/1.8/_modules/django/contrib/auth/models/ 
 20.Registered model in menu/admin.py to show the help text for the columns.
 21. prepare the migrations
 22. create a serializer for the MenuItems
+23. Create a view for get/item/{id} - MenuItemsDetailsView
+24. Create token url for generating token--register the APP
+25. Create a me url to return the user
+=================================================
+26. Create UnitTests for token url and me url
+27.Create post method to create menu items
+
