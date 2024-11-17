@@ -17,7 +17,7 @@ class UserManager(BaseUserManager):
 
         user = self.model(email=email,
                           date_joined=now, **extra_fields)
-        password = user.set_password(password)
+        password = user.set_password(password.strip())
 
         user.save(using=self._db)
         return user
