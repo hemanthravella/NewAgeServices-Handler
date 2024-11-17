@@ -51,6 +51,12 @@ class MenuItem(models.Model):
         related_name='updated_items',
         help_text="ID of the user who last updated the item."
     )
+    item_upd_usr_email = models.EmailField(
+        max_length=255,
+        null=True,
+        blank=True,
+        help_text="Email of the user who created the item."
+    )
     item_create_date = models.DateField(
         auto_now_add=True,
         help_text="Date when the item was created (auto-generated)."
@@ -59,6 +65,7 @@ class MenuItem(models.Model):
         default=True,
         help_text="This will be True/False based on availability of item"
     )
+
 
     def __str__(self):
         return self.item_name
