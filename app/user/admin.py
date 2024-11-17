@@ -9,7 +9,7 @@ class UserAdmin(BaseUserAdmin):
     """Admin panel for Improved User view"""
     ordering = ('email',)
 
-    list_display = ('email', 'first_name', 'last_name', 'is_staff','date_joined')
+    list_display = ('email', 'first_name', 'last_name', 'is_staff','is_admin','is_superuser','date_joined')
     search_fields = ('first_name', 'last_name', 'email')
 
     fieldsets = (
