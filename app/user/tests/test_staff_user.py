@@ -103,7 +103,6 @@ class StaffSuperUserAPITests(TestCase):
         })
 
 
-
 class StaffAdminUserAPITests(TestCase):
     """This tests the Admin user for Staff User API"""
     def setUp(self):
@@ -171,6 +170,48 @@ class StaffAdminUserAPITests(TestCase):
             'is_admin': user.is_admin,
             'is_superuser': user.is_superuser,
         })
+
+
+class StaffUserAPITests(TestCase):
+    """This tests the staff user for Staff User API"""
+    def setUp(self):
+        self.admin_user = create_staff_user(
+            email="staffuser@example.com",
+            password="testStaffUser",
+            )
+        self.client = APIClient()
+        self.client.force_authenticate(user=self.admin_user)
+
+    def test_staff_user_create_admin__user(self):
+        """This is to test Admin user creation by Staff user"""
+        payload = {
+            'email': "testadmin@example.com",
+            'password': 'testpassword',
+            'first_name': 'admin',
+            'last_name': 'user',
+            'is_admin': True,
+            'is_staff': True,
+            'is_superuser': False
+        }
+        res = self.client.post(CREATE_STAFF_USER_URL,payload)
+        self.assertEqual(res.status_code,status.HTTP_403_FORBIDDEN)
+        self.assertFalse(get_user_model().objects.filter(email=payload['email']).exists())
+
+
+    def test_staff_user_create_staff_user(self):
+        """This is to test staff user creation by Staff user"""
+        payload = {
+            'email': "testadmin@example.com",
+            'password': 'testpassword',
+            'first_name': 'admin',
+            'last_name': 'user',
+            'is_admin': False,
+            'is_staff': True,
+            'is_superuser': False
+        }
+        res = self.client.post(CREATE_STAFF_USER_URL,payload)
+        self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertFalse(get_user_model().objects.filter(email=payload['email']).exists())
 
 
 
