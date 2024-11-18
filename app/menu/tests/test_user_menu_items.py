@@ -7,6 +7,8 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
 
+from menu.models import MenuItem
+
 CREATE_MENU_URL = reverse('menu:menu-item-create')
 
 def create_user(**params):
@@ -29,6 +31,10 @@ def create_staff_user(**params):
     user.save()
     return user
 
+def create_menu_item(**params):
+    """Helper function to create and return a menu item"""
+    return MenuItem.objects.create(**params)
+
 class StaffUserMenuCreatePermissionAPITests(TestCase):
     """Test the menu creation by user access"""
 
@@ -50,8 +56,42 @@ class StaffUserMenuCreatePermissionAPITests(TestCase):
         self.client = APIClient()
         self.client.force_authenticate(user=self.user)
 
-    def test_superuser_create_menu_item(self):
-        """this is to test user creating menu item"""
+    def test_user_create_menu_item(self):
+        """This is to test user creating menu item"""
 
         res = self.client.post(CREATE_MENU_URL, self.item)
         self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_user_menu_item_detail_no_all(self):
+        """This is to test the detail view of the item"""
+        # new_item = create_menu_item(user=self.user,**self.item)
+        # url = reverse('menu:menu-item-detail', args=[new_item.item_id])
+        # get_res = self.client.get(url)
+        #
+        # self.assertEqual(get_res.status_code,status.HTTP_200_OK)
+        # self.assertEqual(get_res.data, {
+        #     'item_name':new_item.item_name,
+        #     'is_allergic': new_item.is_allergic,
+        #     'is_vegetarian': new_item.is_vegetarian,
+        #     'is_available': new_item.is_available,
+        #     'item_cost': new_item.item_cost
+        # })
+        # TODO
+        pass
+
+    def test_user_menu_item_detail_all(self):
+        """This is to test the detail view of the item"""
+        # new_item = create_menu_item(user=self.user,**self.item)
+        # url = reverse('menu:menu-item-detail', args=[new_item.item_id])
+        # get_res = self.client.get(url)
+        #
+        # self.assertEqual(get_res.status_code,status.HTTP_200_OK)
+        # self.assertEqual(get_res.data, {
+        #     'item_name':new_item.item_name,
+        #     'is_allergic': new_item.is_allergic,
+        #     'is_vegetarian': new_item.is_vegetarian,
+        #     'is_available': new_item.is_available,
+        #     'item_cost': new_item.item_cost
+        # })
+        # TODO
+        pass
