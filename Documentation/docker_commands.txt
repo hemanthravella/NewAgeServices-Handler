@@ -61,6 +61,10 @@ docker rm <container_name_or_id>
 
 13. Remove All Stopped Containers
 docker container prune
+
+Corrupted Docker cache might cause pull failures. Clear the cache and retry.
+docker system prune --all --force
+
 ```
 - Removes all containers that are currently stopped.
 
@@ -94,3 +98,11 @@ docker-compose up --scale <service_name>=<number>
 You can get help with additional flags for any command by using:
 docker <command> --help
 ```
+docker exec -it newageservices-handler-db-1 psql -U devuser -d postgres
+
+docker exec -it 4531e69beb1b bash
+psql -U postgres
+PGPASSWORD=yourpassword psql -U postgres
+SELECT * FROM your_table;
+
+
