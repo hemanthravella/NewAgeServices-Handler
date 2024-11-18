@@ -3,6 +3,7 @@
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 from django.urls import reverse
+from django.utils.dateformat import DateFormat
 
 from rest_framework import status
 from rest_framework.test import APIClient
@@ -108,6 +109,10 @@ class MenuItemDetailTests(TestCase):
             'is_allergic': self.menu_item.is_allergic,
             'is_vegetarian': self.menu_item.is_vegetarian,
             'is_available': self.menu_item.is_available,
+            'item_upd_usr_email': self.menu_item.item_upd_usr_email,
+            'item_last_upd_ts': DateFormat(self.menu_item.item_last_upd_ts).format(
+                'Y-m-d H:i:s') if self.menu_item.item_last_upd_ts else None,
+
         })
 
     def test_get_menu_item_not_found(self):
