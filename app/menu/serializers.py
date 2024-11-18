@@ -22,3 +22,26 @@ class MenuItemSerializer(serializers.ModelSerializer):
             existing = set(self.fields.keys())
             for field_name in existing - allowed:
                 self.fields.pop(field_name)
+
+    def update(self, instance, validated_data, **kwargs):
+        """To validate the data which is sent using patch"""
+        try:
+            for key, value in validated_data.items():
+                if hasattr(instance,key):
+                    setattr(instance,key,value)
+                else: raise AttributeError(f"{key} is not a valid attribute of {type(instance).__name__}")
+
+            for key,value in kwargs.items():
+                if hasattr(instance,key):
+                    setattr(instance,key,value)
+                else: raise AttributeError(f"{key} is not a valid attribute of {type(instance).__name__}")
+
+            instance.save()
+
+        except AttributeError as ae:
+            raise ValueError(f"Invalid attribute update: {ae}")
+
+        except Exception as e:
+            raise RuntimeError(f"An unexpected error occurred during update: {e}")
+
+        return instance

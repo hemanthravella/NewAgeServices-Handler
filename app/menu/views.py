@@ -2,12 +2,15 @@
 from django.contrib.auth.models import PermissionsMixin
 from django.db.models.lookups import Exact
 from django.shortcuts import render, get_object_or_404
+from django.utils.dateformat import DateFormat
 from rest_framework import status
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.status import HTTP_200_OK, HTTP_201_CREATED
+from rest_framework.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_400_BAD_REQUEST
 from rest_framework.views import APIView
+from yaml import serialize
+
 from .models import MenuItem
 from .serializers import MenuItemSerializer
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
@@ -31,6 +34,10 @@ class MenuItemDetailView(APIView):
             'is_allergic': menu_item.is_allergic,
             'is_vegetarian': menu_item.is_vegetarian,
             'is_available': menu_item.is_available,
+            'item_upd_usr_email': menu_item.item_upd_usr_email,
+            # Format datetime field as string in a readable format (ISO 8601 or custom format)
+            'item_last_upd_ts': DateFormat(menu_item.item_last_upd_ts).format('Y-m-d H:i:s') if menu_item.item_last_upd_ts else None,
+
         })
 
 
@@ -82,8 +89,52 @@ class MenuItemsView(APIView):
             )
 
 
+class MenuItemsPatchView(APIView):
+    """This view helps in creating and updating the menu item and deleting"""
 
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
 
+    @extend_schema(
+        request=MenuItemSerializer,  # Specifies the request body schema
+        responses={
+            201: MenuItemSerializer,  # Specifies the response schema
+            400: 'Bad Request',
+            403: 'Forbidden',
+            500: 'Internal Server Error'
+        }
+    )
+    def patch(self, request, item_id):
+        """This view updates item associated with the item_id"""
 
+        try:
+            if not (request.user.is_admin or request.user.is_superuser):
+                return Response(
+                    {"Error": "Only admin/super user's can update menu items"},
+                    status=status.HTTP_403_FORBIDDEN,
+                )
+
+            item = MenuItem.objects.get(item_id=item_id)
+            request.data['item_upd_usr_id'] = request.user.id
+            request.data['item_upd_usr_email'] = request.user.email
+            serializer = MenuItemSerializer(item, data=request.data, partial=True)
+
+            if serializer.is_valid():
+                updated_item = serializer.update(item, serializer.validated_data)
+                return Response(MenuItemSerializer(updated_item).data, status=status.HTTP_200_OK)
+
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        except ObjectDoesNotExist as ODNE:
+            return Response({
+                "error": f"Item with id:{item_id} does not exist",
+                "Details": f"{str(ODNE)}",
+            }, status=status.HTTP_404_NOT_FOUND)
+
+        except Exception as e:
+            return Response({
+                "error": "An unexpected error occurred",
+                "Details": f"{str(e)}"
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
