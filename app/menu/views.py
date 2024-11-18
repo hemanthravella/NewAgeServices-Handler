@@ -1,7 +1,7 @@
 """Contains menu views"""
 from django.contrib.auth.models import PermissionsMixin
 from django.db.models.lookups import Exact
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from rest_framework import status
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
@@ -14,21 +14,25 @@ from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from drf_spectacular.utils import extend_schema
 
 
-class MenuItemsDetailsView(APIView):
-    """Gives details of the items"""
+class MenuItemDetailView(APIView):
+    """View for fetching a menu item by its ID"""
 
-    def get(self,request, id):
-        expand = request.query_params.get('expand',None)
-        try:
-            item = MenuItem.objects.get(item_id='id')
-            if expand == 'all':
-                serializer = MenuItemSerializer(item)
-            else:
-                serializer = MenuItemSerializer(item, fields=['item_name', 'is_allergic', 'is_vegetarian', 'is_available', 'item_cost'])
+    def get(self, request, item_id):
+        # Fetch the MenuItem by item_id
+        menu_item = get_object_or_404(MenuItem, item_id=item_id)
 
-            return Response(serializer.data,status=status.HTTP_200_OK)
-        except ObjectDoesNotExist:
-            return Response({'error': f'Item not found for id{id}'},status=status.HTTP_404_NOT_FOUND)
+        # Return the item details
+        return Response({
+            'item_name': menu_item.item_name,
+            'item_type': menu_item.item_type,
+            'menu_type': menu_item.menu_type,
+            'item_cost': str(menu_item.item_cost),  # Converting decimal to string for consistent formatting
+            'item_description': menu_item.item_description,
+            'is_allergic': menu_item.is_allergic,
+            'is_vegetarian': menu_item.is_vegetarian,
+            'is_available': menu_item.is_available,
+        })
+
 
 class MenuItemsView(APIView):
     """This view helps in creating and updating the menu item and deleting"""

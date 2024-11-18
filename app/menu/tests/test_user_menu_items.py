@@ -62,36 +62,62 @@ class StaffUserMenuCreatePermissionAPITests(TestCase):
         res = self.client.post(CREATE_MENU_URL, self.item)
         self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
 
-    def test_user_menu_item_detail_no_all(self):
-        """This is to test the detail view of the item"""
-        # new_item = create_menu_item(user=self.user,**self.item)
-        # url = reverse('menu:menu-item-detail', args=[new_item.item_id])
-        # get_res = self.client.get(url)
-        #
-        # self.assertEqual(get_res.status_code,status.HTTP_200_OK)
-        # self.assertEqual(get_res.data, {
-        #     'item_name':new_item.item_name,
-        #     'is_allergic': new_item.is_allergic,
-        #     'is_vegetarian': new_item.is_vegetarian,
-        #     'is_available': new_item.is_available,
-        #     'item_cost': new_item.item_cost
-        # })
-        # TODO
-        pass
 
-    def test_user_menu_item_detail_all(self):
-        """This is to test the detail view of the item"""
-        # new_item = create_menu_item(user=self.user,**self.item)
-        # url = reverse('menu:menu-item-detail', args=[new_item.item_id])
-        # get_res = self.client.get(url)
-        #
-        # self.assertEqual(get_res.status_code,status.HTTP_200_OK)
-        # self.assertEqual(get_res.data, {
-        #     'item_name':new_item.item_name,
-        #     'is_allergic': new_item.is_allergic,
-        #     'is_vegetarian': new_item.is_vegetarian,
-        #     'is_available': new_item.is_available,
-        #     'item_cost': new_item.item_cost
-        # })
-        # TODO
-        pass
+class MenuItemDetailTests(TestCase):
+    """Test retrieving a single menu item by item_id"""
+
+    def setUp(self):
+        # Create a test user
+        self.user = create_user(email="user@example.com", password="password123")
+
+        # Create a menu item
+        self.item_data = {
+            "item_name": "Samosa",
+            "item_type": "Snack",
+            "menu_type": "FullDay",
+            "item_cost": "1.95",
+            "item_description": "Crispy and delicious snack.",
+            "is_allergic": True,
+            "is_vegetarian": True,
+            "is_available": True
+        }
+        self.menu_item = create_menu_item(**self.item_data)
+
+        # Create an API client and authenticate the user
+        self.client = APIClient()
+        self.client.force_authenticate(user=self.user)
+
+        # Define the URL for the item detail view
+        self.url = reverse('menu:menu-item-detail', args=[self.menu_item.item_id])
+
+    def test_get_menu_item_success(self):
+        """Test retrieving a menu item by its item_id successfully."""
+        # Make the GET request to fetch the menu item details
+        response = self.client.get(self.url)
+
+        # Assert the status code is 200 OK
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # Assert the response data matches the menu item data
+        self.assertEqual(response.data, {
+            'item_name': self.menu_item.item_name,
+            'item_type': self.menu_item.item_type,
+            'menu_type': self.menu_item.menu_type,
+            'item_cost': str(self.menu_item.item_cost),
+            'item_description': self.menu_item.item_description,
+            'is_allergic': self.menu_item.is_allergic,
+            'is_vegetarian': self.menu_item.is_vegetarian,
+            'is_available': self.menu_item.is_available,
+        })
+
+    def test_get_menu_item_not_found(self):
+        """Test retrieving a non-existent menu item by its item_id."""
+        # Create a URL with a non-existent item_id (invalid ID)
+        invalid_url = reverse('menu:menu-item-detail', args=[99999])
+
+        # Make the GET request to fetch the non-existent menu item
+        response = self.client.get(invalid_url)
+
+        # Assert the status code is 404 Not Found
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(response.data['detail'], 'No MenuItem matches the given query.')
