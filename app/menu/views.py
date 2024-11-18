@@ -115,9 +115,15 @@ class MenuItemsPatchView(APIView):
                 )
 
             item = MenuItem.objects.get(item_id=item_id)
-            request.data['item_upd_usr_id'] = request.user.id
-            request.data['item_upd_usr_email'] = request.user.email
-            serializer = MenuItemSerializer(item, data=request.data, partial=True)
+
+            mutable_data = request.data.copy()
+            mutable_data['item_upd_usr_id'] = request.user.id
+            mutable_data['item_upd_usr_email'] = request.user.email
+            serializer = MenuItemSerializer(item, data=mutable_data, partial=True)
+
+            # request.data['item_upd_usr_id'] = request.user.id
+            # request.data['item_upd_usr_email'] = request.user.email
+            # serializer = MenuItemSerializer(item, data=request.data, partial=True)
 
             if serializer.is_valid():
                 updated_item = serializer.update(item, serializer.validated_data)
@@ -128,13 +134,13 @@ class MenuItemsPatchView(APIView):
         except ObjectDoesNotExist as ODNE:
             return Response({
                 "error": f"Item with id:{item_id} does not exist",
-                "Details": f"{str(ODNE)}",
+                "Details": f"{type(ODNE).__name__}, {ODNE}",
             }, status=status.HTTP_404_NOT_FOUND)
 
         except Exception as e:
             return Response({
                 "error": "An unexpected error occurred",
-                "Details": f"{str(e)}"
+                "Details": f"{type(e).__name__}, {e}"
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
