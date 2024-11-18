@@ -71,6 +71,7 @@ class AdminUserUpdateMenuItemAPI(TestCase):
         self.user = create_admin_user(email="adminuser1@example.com", password="password123")
 
     def test_admin_user_update_menu_item_Success(self):
+        """To test admin user able to update menu item"""
         self.item_data = {
             "item_name": "Samosa",
             "item_type": "Snack",
@@ -103,3 +104,48 @@ class AdminUserUpdateMenuItemAPI(TestCase):
             self.get_res.data["item_type"],
             self.item_patch_data["item_type"]
         )
+        self.assertEqual(self.user.email, self.get_res.data['item_upd_usr_email'])
+
+
+    def test_admin_user_updating_item_not_found(self):
+        """To test admin user update item which is not available"""
+        self.item_patch_data = {
+            "item_name": "Updated Samosa",
+            "item_type": "Snacking"
+        }
+
+        self.client = APIClient()
+        self.client.force_authenticate(user=self.user)
+
+        self.patch_url = reverse('menu:menu-item-patch', kwargs={'item_id':9999})
+        self.patch_res = self.client.patch(self.patch_url, data=self.item_patch_data)
+
+        self.assertEqual(self.patch_res.status_code,status.HTTP_404_NOT_FOUND)
+
+    def test_admin_user_updating_item_with_bad_data(self):
+        """To test admin user update item which is not valid"""
+        self.item_data = {
+            "item_name": "Samosa",
+            "item_type": "Snack",
+            "menu_type": "FullDay",
+            "item_cost": "1.95",
+            "item_description": "Crispy and delicious snack.",
+            "is_allergic": True,
+            "is_vegetarian": True,
+            "is_available": True
+        }
+        self.item_patch_data = {
+            "bad_name": "Updated Samosa",
+            "bad_type": "Snacking"
+        }
+
+        self.menu_item = create_menu_item(**self.item_data)
+        self.client = APIClient()
+        self.client.force_authenticate(user=self.user)
+
+        self.patch_url = reverse('menu:menu-item-patch', kwargs={'item_id':self.menu_item.item_id})
+        self.patch_res = self.client.patch(self.patch_url, data=self.item_patch_data)
+
+        self.assertEqual(self.patch_res.status_code,status.HTTP_400_BAD_REQUEST)
+
+

@@ -104,3 +104,19 @@ class SuperUserUpdateMenuItemAPI(TestCase):
             self.get_res.data["item_type"],
             self.item_patch_data["item_type"]
         )
+        self.assertEqual(self.user.email, self.get_res.data['item_upd_usr_email'])
+
+    def test_super_user_updating_item_not_found(self):
+        """To test superuser update item which is not available"""
+        self.item_patch_data = {
+            "item_name": "Updated Samosa",
+            "item_type": "Snacking"
+        }
+
+        self.client = APIClient()
+        self.client.force_authenticate(user=self.user)
+
+        self.patch_url = reverse('menu:menu-item-patch', kwargs={'item_id':9999})
+        self.patch_res = self.client.patch(self.patch_url, data=self.item_patch_data)
+
+        self.assertEqual(self.patch_res.status_code,status.HTTP_404_NOT_FOUND)

@@ -23,6 +23,17 @@ class MenuItemSerializer(serializers.ModelSerializer):
             for field_name in existing - allowed:
                 self.fields.pop(field_name)
 
+    def validate(self, attrs):
+        """This validates the fields to be part of model"""
+        bad_data = set(self.initial_data.keys())-set(self.fields.keys())
+
+        if bad_data:
+            raise serializers.ValidationError(
+                {field: "Bad-input." for field in bad_data}
+            )
+
+        return attrs
+
     def update(self, instance, validated_data, **kwargs):
         """To validate the data which is sent using patch"""
         try:
@@ -39,7 +50,7 @@ class MenuItemSerializer(serializers.ModelSerializer):
             instance.save()
 
         except AttributeError as ae:
-            raise ValueError(f"Invalid attribute update: {ae}")
+            raise serializers.ValidationError(f"Invalid attribute update: {ae}")
 
         except Exception as e:
             raise RuntimeError(f"An unexpected error occurred during update: {e}")

@@ -126,7 +126,8 @@ class MenuItemsPatchView(APIView):
             # serializer = MenuItemSerializer(item, data=request.data, partial=True)
 
             if serializer.is_valid():
-                updated_item = serializer.update(item, serializer.validated_data)
+                # updated_item = serializer.update(item, serializer.validated_data)
+                updated_item = serializer.save()
                 return Response(MenuItemSerializer(updated_item).data, status=status.HTTP_200_OK)
 
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
