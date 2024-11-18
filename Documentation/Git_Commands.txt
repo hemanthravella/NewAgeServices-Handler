@@ -1,0 +1,99 @@
+
+Basic Git Commands:
+
+1. Initialize a repository:
+   git init
+
+2. Clone a repository:
+   git clone <repository_url>
+
+3. Check the status of your repository:
+   git status
+
+4. Add files to the staging area:
+   git add <file_name>
+   git add .  # Add all changes
+
+5. Commit changes:
+   git commit -m "Commit message"
+
+6. View commit history:
+   git log
+
+7. Create a new branch:
+   git branch <branch_name>
+
+8. Switch to a branch:
+   git checkout <branch_name>
+   git switch <branch_name>  # Preferred in newer versions
+
+9. Create and switch to a branch:
+   git checkout -b <branch_name>
+   git switch -c <branch_name>
+
+10. Merge a branch into the current branch:
+    git merge <branch_name>
+
+11. Push changes to a remote repository:
+    git push origin <branch_name>
+
+12. Pull changes from a remote repository:
+    git pull
+
+13. Set a remote repository:
+    git remote add origin <repository_url>
+
+14. View remote repositories:
+    git remote -v
+
+15. Delete a branch:
+    git branch -d <branch_name>  # Delete locally
+    git push origin --delete <branch_name>  # Delete remotely
+
+16. Stash changes:
+    git stash
+    git stash pop  # Apply stashed changes
+
+17. View stashed changes:
+    git stash list
+
+18. Undo changes:
+    git checkout -- <file_name>  # Discard changes in a file
+    git reset HEAD <file_name>  # Unstage a file
+
+19. Revert a commit:
+    git revert <commit_hash>
+
+20. Amend the last commit:
+    git commit --amend -m "New commit message"
+
+21. Tag a commit:
+    git tag <tag_name>
+    git push origin <tag_name>
+
+22. View differences:
+    git diff
+
+23. Fetch updates from remote:
+    git fetch
+
+24. Rebase a branch:
+    git rebase <branch_name>
+
+25. Resolve merge conflicts:
+    Edit conflicting files, then:
+    git add <file_name>
+    git commit
+
+26. Delete a file from Git:
+    git rm <file_name>
+    git commit -m "Removed file"
+
+27. Remove tracked files but keep them locally:
+    git rm --cached <file_name>
+
+28. Rename a file:
+    git mv <old_file_name> <new_file_name>
+
+29. Squash commits during rebase:
+    git rebase -i HEAD~<number_of_commits>
