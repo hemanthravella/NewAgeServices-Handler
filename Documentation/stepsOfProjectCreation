@@ -26,3 +26,23 @@ Ref: https://docs.djangoproject.com/en/1.8/_modules/django/contrib/auth/models/ 
             2. https://docs.djangoproject.com/en/5.1/ref/contrib/admin/#customizing-the-admin-interface
 17.Created UserAdmin and registered with admin.site.urls
 ================================================
+18. Created menu app
+19. created model MenuItem
+20.Registered model in menu/admin.py to show the help text for the columns.
+21. prepare the migrations
+22. create a serializer for the MenuItems
+23. Create a view for get/item/{id} - MenuItemsDetailsView
+24. Create token url for generating token--register the APP
+25. Create a me url to return the user
+=================================================
+26. Create UnitTests for token url and me url
+27.Create post method to create menu items --> The item can be created by either admin or staff or super user
+28. create a post api for creating staff user or admin user, if is_admin is passed in the request body then the staff user will be admin
+29. only super user or admin user can create staff user and only super user can create admin user
+30. use @extend_schema for view created using API_Schema for drf to recognize
+31. Update /me to use APIView
+====================
+30.create unit tests for /api/user/create/staffUser/,/api/menu/v1/createItem,/api/menu/v1/item/{id}
+
+
+

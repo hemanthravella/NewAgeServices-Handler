@@ -100,3 +100,9 @@ docker <command> --help
 ```
 docker exec -it newageservices-handler-db-1 psql -U devuser -d postgres
 
+docker exec -it 4531e69beb1b bash
+psql -U postgres
+PGPASSWORD=yourpassword psql -U postgres
+SELECT * FROM your_table;
+
+

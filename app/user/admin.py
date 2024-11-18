@@ -2,14 +2,14 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.utils.translation import gettext_lazy as _
 # Register your models here.
-from user import models
+from . import models
 
 
 class UserAdmin(BaseUserAdmin):
     """Admin panel for Improved User view"""
     ordering = ('email',)
 
-    list_display = ('email', 'first_name', 'last_name', 'is_staff','date_joined')
+    list_display = ('email', 'first_name', 'last_name', 'is_staff','is_admin','is_superuser','date_joined')
     search_fields = ('first_name', 'last_name', 'email')
 
     fieldsets = (
