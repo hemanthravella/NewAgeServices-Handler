@@ -41,7 +41,8 @@ Ref: https://docs.djangoproject.com/en/1.8/_modules/django/contrib/auth/models/ 
 29. only super user or admin user can create staff user and only super user can create admin user
 30. use @extend_schema for view created using API_Schema for drf to recognize
 31. Update /me to use APIView
-30.#TODO create unit tests for /api/user/create/staffUser/,/api/menu/v1/createItem,/api/menu/v1/item/{id}
-31. #TODO update unit tests
+====================
+30.create unit tests for /api/user/create/staffUser/,/api/menu/v1/createItem,/api/menu/v1/item/{id}
+
 
 
