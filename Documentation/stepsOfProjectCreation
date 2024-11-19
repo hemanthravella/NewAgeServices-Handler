@@ -44,7 +44,9 @@ Ref: https://docs.djangoproject.com/en/1.8/_modules/django/contrib/auth/models/ 
 ====================
 30.create unit tests for /api/user/create/staffUser/,/api/menu/v1/createItem,/api/menu/v1/item/{id}
 31. Create update api for menu : Created a patch method
-32. #TODO Add unit tests for the patch method of menu item update
+32. Add unit tests SUccess and error based on permissions for the patch method of menu item update
+33.  add more unit tests for testing the functionality
+34. add delete item functionality in menu app
 33. #TODO create update first_name, last_name and reset password
 
 
