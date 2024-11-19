@@ -10,6 +10,8 @@ from rest_framework.test import APIClient
 
 from menu.models import MenuItem
 
+from menu.models import MenuAudit
+
 CREATE_MENU_URL = reverse('menu:menu-item-create')
 
 
@@ -169,6 +171,3 @@ class UserUpdateMenuItemAPI(TestCase):
             self.get_res.data["item_type"],
             self.menu_item.item_type
         )
-
-
-

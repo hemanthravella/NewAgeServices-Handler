@@ -1,4 +1,4 @@
-"""ADMIN ACCESS : Tests for the menu API"""
+"""ADMIN ACCESS: Tests for the menu API"""
 
 from django.test import TestCase
 from django.contrib.auth import get_user_model
@@ -7,7 +7,7 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from menu.models import MenuItem
+from menu.models import MenuItem,MenuAudit
 
 CREATE_MENU_URL = reverse('menu:menu-item-create')
 
@@ -148,4 +148,43 @@ class AdminUserUpdateMenuItemAPI(TestCase):
 
         self.assertEqual(self.patch_res.status_code,status.HTTP_400_BAD_REQUEST)
 
+
+class AdminUserDeleteMenuItemAPI(TestCase):
+
+    def setUp(self):
+        # Create a test user
+        self.user = create_admin_user(email="user@example.com", password="password123")
+
+    def test_admin_user_delete_menu_item_success(self):
+        """To test if the admin user access can delete the menu item"""
+        self.item_data = {
+            "item_name": "Samosa",
+            "item_type": "Snack",
+            "menu_type": "FullDay",
+            "item_cost": "1.95",
+            "item_description": "Crispy and delicious snack.",
+            "is_allergic": True,
+            "is_vegetarian": True,
+            "is_available": True
+        }
+
+        self.menu_item = create_menu_item(**self.item_data)
+        self.client = APIClient()
+        self.client.force_authenticate(user=self.user)
+
+        self.del_url = reverse('menu:menu-item-delete', kwargs={'item_id':self.menu_item.item_id})
+        self.res = self.client.delete(self.del_url)
+        print(f"response:{self.res}")
+        self.assertEqual(self.res.status_code, status.HTTP_200_OK)
+        self.assertEqual(self.res.data['deleted_by_usr_email'], self.user.email)
+        self.assertEqual(self.res.data['item_id'], self.menu_item.item_id)
+        self.assertEqual(self.res.data['item_name'], self.menu_item.item_name)
+
+        self.menu_audit_item = MenuAudit.objects.get(id=self.res.data['id'])
+        self.assertEqual(self.menu_audit_item.deleted_by_usr_email,self.user.email)
+        self.assertEqual(self.menu_audit_item.item_name,self.item_data['item_name'])
+        self.assertEqual(self.menu_audit_item.item_id,self.menu_item.item_id)
+
+        with self.assertRaises(MenuItem.DoesNotExist):
+            MenuItem.objects.get(item_id=self.menu_item.item_id)
 
