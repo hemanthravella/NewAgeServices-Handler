@@ -2,7 +2,7 @@
 
 from rest_framework import serializers
 
-from .models import MenuItem
+from .models import MenuItem, MenuAudit
 
 
 class MenuItemSerializer(serializers.ModelSerializer):
@@ -23,25 +23,19 @@ class MenuItemSerializer(serializers.ModelSerializer):
             for field_name in existing - allowed:
                 self.fields.pop(field_name)
 
-    def update(self, instance, validated_data, **kwargs):
-        """To validate the data which is sent using patch"""
-        try:
-            for key, value in validated_data.items():
-                if hasattr(instance,key):
-                    setattr(instance,key,value)
-                else: raise AttributeError(f"{key} is not a valid attribute of {type(instance).__name__}")
+    def validate(self, attrs):
+        """This validates the fields to be part of model"""
+        bad_data = set(self.initial_data.keys())-set(self.fields.keys())
 
-            for key,value in kwargs.items():
-                if hasattr(instance,key):
-                    setattr(instance,key,value)
-                else: raise AttributeError(f"{key} is not a valid attribute of {type(instance).__name__}")
+        if bad_data:
+            raise serializers.ValidationError(
+                {field: "Bad-input." for field in bad_data}
+            )
 
-            instance.save()
+        return attrs
 
-        except AttributeError as ae:
-            raise ValueError(f"Invalid attribute update: {ae}")
+class MenuAuditSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MenuAudit
+        fields = '__all__'
 
-        except Exception as e:
-            raise RuntimeError(f"An unexpected error occurred during update: {e}")
-
-        return instance
