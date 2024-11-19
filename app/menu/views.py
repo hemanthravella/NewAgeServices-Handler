@@ -9,12 +9,13 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_400_BAD_REQUEST
 from rest_framework.views import APIView
-from yaml import serialize
 
-from .models import MenuItem
-from .serializers import MenuItemSerializer
+from .models import MenuItem, MenuAudit
+from .serializers import MenuItemSerializer, MenuAuditSerializer
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from drf_spectacular.utils import extend_schema
+
+from django.db import transaction, IntegrityError
 
 
 class MenuItemDetailView(APIView):
@@ -76,14 +77,16 @@ class MenuItemsView(APIView):
 
         except ValidationError as v:
             return Response(
-                {"error": "Data provided is invalid", "Details": str(v)},
+                {
+                    "error": "Data provided is invalid",
+                    "Details": f"{type(v).__name__}, {v}"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
         except Exception as e:
             return Response(
                 {
-                    "error": "An unexpected error occured",
-                    "Details":"str(e)"
+                    "error": "An unexpected error occurred",
+                    "Details":f"{type(e).__name__}, {e}"
                 },
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
@@ -115,12 +118,19 @@ class MenuItemsPatchView(APIView):
                 )
 
             item = MenuItem.objects.get(item_id=item_id)
-            request.data['item_upd_usr_id'] = request.user.id
-            request.data['item_upd_usr_email'] = request.user.email
-            serializer = MenuItemSerializer(item, data=request.data, partial=True)
+
+            mutable_data = request.data.copy()
+            mutable_data['item_upd_usr_id'] = request.user.id
+            mutable_data['item_upd_usr_email'] = request.user.email
+            serializer = MenuItemSerializer(item, data=mutable_data, partial=True)
+
+            # request.data['item_upd_usr_id'] = request.user.id
+            # request.data['item_upd_usr_email'] = request.user.email
+            # serializer = MenuItemSerializer(item, data=request.data, partial=True)
 
             if serializer.is_valid():
-                updated_item = serializer.update(item, serializer.validated_data)
+                # updated_item = serializer.update(item, serializer.validated_data)
+                updated_item = serializer.save()
                 return Response(MenuItemSerializer(updated_item).data, status=status.HTTP_200_OK)
 
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -128,13 +138,74 @@ class MenuItemsPatchView(APIView):
         except ObjectDoesNotExist as ODNE:
             return Response({
                 "error": f"Item with id:{item_id} does not exist",
-                "Details": f"{str(ODNE)}",
+                "Details": f"{type(ODNE).__name__}, {ODNE}",
             }, status=status.HTTP_404_NOT_FOUND)
 
         except Exception as e:
             return Response({
                 "error": "An unexpected error occurred",
-                "Details": f"{str(e)}"
+                "Details": f"{type(e).__name__}, {e}"
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class MenuItemDeleteView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    @extend_schema(
+        request=MenuItemSerializer,  # Specifies the request body schema
+        responses={
+            201: MenuItemSerializer,  # Specifies the response schema
+            400: 'Bad Request',
+            403: 'Forbidden',
+            500: 'Internal Server Error'
+        }
+    )
+
+    def delete(self,request,item_id):
+        """This handles the deletion og menu item and adds entry in MenuAudit"""
+        try:
+            if not (request.user.is_admin or request.user.is_superuser):
+                return Response(
+                    {"Error": "Only admin/super user's can update menu items"},
+                    status=status.HTTP_403_FORBIDDEN,
+                )
+            try:
+                item = MenuItem.objects.get(item_id=item_id)
+            except MenuItem.DoesNotExist:
+                return Response(
+                    {"error": f"Item with id {item_id} not found"},
+                    status=status.HTTP_404_NOT_FOUND,
+                )
+
+            with transaction.atomic():
+                #the following check is for the unit test of atomic check
+                if request.data.get("force_failure"):
+                    raise ValueError("Simulated failure for testing rollback")
+
+                #to make sure both go hand in hand, if one fails, the block fails
+                menu_audit = MenuAudit.objects.create(
+                    item_id=item.item_id,
+                    item_name=item.item_name,
+                    deleted_by_usr_id=request.user,
+                    deleted_by_usr_email=request.user.email
+                    )
+
+                item.delete()
+
+            return Response(
+                MenuAuditSerializer(menu_audit).data,
+                status=status.HTTP_200_OK
+                )
+        except IntegrityError as e:
+            return Response({
+                "error": "Integrity error occurred",
+                "details": str(e)
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        except Exception as e:
+            return Response({
+                "error": "An unexpected error occurred",
+                "details": str(e)
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 

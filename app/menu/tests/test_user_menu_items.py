@@ -10,7 +10,10 @@ from rest_framework.test import APIClient
 
 from menu.models import MenuItem
 
+from menu.models import MenuAudit
+
 CREATE_MENU_URL = reverse('menu:menu-item-create')
+
 
 def create_user(**params):
     """create and return the user"""
@@ -126,3 +129,72 @@ class MenuItemDetailTests(TestCase):
         # Assert the status code is 404 Not Found
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         self.assertEqual(response.data['detail'], 'No MenuItem matches the given query.')
+
+class UserUpdateMenuItemAPI(TestCase):
+    """This is to test if the user can update the menu item using menu-item-patch"""
+
+    def setUp(self):
+        # Create a test user
+        self.user = create_user(email="user@example.com", password="password123")
+
+    def test_user_update_menu_item_error(self):
+        self.item_data = {
+            "item_name": "Samosa",
+            "item_type": "Snack",
+            "menu_type": "FullDay",
+            "item_cost": "1.95",
+            "item_description": "Crispy and delicious snack.",
+            "is_allergic": True,
+            "is_vegetarian": True,
+            "is_available": True
+        }
+        self.item_patch_data = {
+            "item_name": "Updated Samosa",
+            "item_type": "Snacking"
+        }
+        self.menu_item = create_menu_item(**self.item_data)
+        self.client = APIClient()
+        self.client.force_authenticate(user=self.user)
+
+        self.patch_url = reverse('menu:menu-item-patch', kwargs={'item_id':self.menu_item.item_id})
+        self.patch_res = self.client.patch(self.patch_url, data=self.item_patch_data)
+
+        self.get_url = reverse('menu:menu-item-detail', args=[self.menu_item.item_id])
+        self.get_res = self.client.get(self.get_url)
+
+        self.assertEqual(self.patch_res.status_code,status.HTTP_403_FORBIDDEN)
+        self.assertEqual(
+            self.get_res.data["item_name"],
+            self.menu_item.item_name
+        )
+        self.assertEqual(
+            self.get_res.data["item_type"],
+            self.menu_item.item_type
+        )
+
+class UserDeleteMenuItemAPI(TestCase):
+
+    def setUp(self):
+        # Create a test user
+        self.user = create_user(email="user@example.com", password="password123")
+
+    def test_user_delete_menu_item_error(self):
+        """To test if the user access can delete the menu item"""
+        self.item_data = {
+            "item_name": "Samosa",
+            "item_type": "Snack",
+            "menu_type": "FullDay",
+            "item_cost": "1.95",
+            "item_description": "Crispy and delicious snack.",
+            "is_allergic": True,
+            "is_vegetarian": True,
+            "is_available": True
+        }
+
+        self.menu_item = create_menu_item(**self.item_data)
+        self.client = APIClient()
+        self.client.force_authenticate(user=self.user)
+
+        self.del_url = reverse('menu:menu-item-delete', kwargs={'item_id':self.menu_item.item_id})
+        self.res = self.client.delete(self.del_url)
+        self.assertEqual(self.res.status_code, status.HTTP_403_FORBIDDEN)

@@ -20,7 +20,7 @@ class MenuItem(models.Model):
     )
     menu_type = models.CharField(
         max_length=50,
-        help_text="Type or category of the menu item (e.g., 'BreakFast','Lunch','Fullday')."
+        help_text="Type or category of the menu item (e.g., 'BreakFast','Lunch','Full day')."
     )
     item_cost = models.DecimalField(
         max_digits=6,
@@ -69,4 +69,31 @@ class MenuItem(models.Model):
 
     def __str__(self):
         return self.item_name
+
+class MenuAudit(models.Model):
+    """Model to log deleted menu items."""
+    id = models.AutoField(primary_key=True)
+    item_id = models.IntegerField()
+    item_name = models.CharField(max_length=50)
+    deleted_at = models.DateTimeField(default=now)
+    deleted_by_usr_id = models.ForeignKey(
+        User,
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        help_text="The user who deleted the item."
+    )
+    deleted_by_usr_email = models.EmailField(
+        max_length=255,
+        null=True,
+        blank=True,
+        help_text="Email of the user who created the item."
+    )
+
+    class Meta:
+        verbose_name = "Menu Audit"
+        verbose_name_plural = "Menu Audits"
+
+    def __str__(self):
+        return f"Audit Log for Item {self.item_id}: {self.item_name}"
 
