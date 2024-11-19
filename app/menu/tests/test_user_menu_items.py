@@ -171,3 +171,30 @@ class UserUpdateMenuItemAPI(TestCase):
             self.get_res.data["item_type"],
             self.menu_item.item_type
         )
+
+class UserDeleteMenuItemAPI(TestCase):
+
+    def setUp(self):
+        # Create a test user
+        self.user = create_user(email="user@example.com", password="password123")
+
+    def test_user_delete_menu_item_error(self):
+        """To test if the user access can delete the menu item"""
+        self.item_data = {
+            "item_name": "Samosa",
+            "item_type": "Snack",
+            "menu_type": "FullDay",
+            "item_cost": "1.95",
+            "item_description": "Crispy and delicious snack.",
+            "is_allergic": True,
+            "is_vegetarian": True,
+            "is_available": True
+        }
+
+        self.menu_item = create_menu_item(**self.item_data)
+        self.client = APIClient()
+        self.client.force_authenticate(user=self.user)
+
+        self.del_url = reverse('menu:menu-item-delete', kwargs={'item_id':self.menu_item.item_id})
+        self.res = self.client.delete(self.del_url)
+        self.assertEqual(self.res.status_code, status.HTTP_403_FORBIDDEN)

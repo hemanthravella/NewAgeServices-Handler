@@ -174,7 +174,6 @@ class AdminUserDeleteMenuItemAPI(TestCase):
 
         self.del_url = reverse('menu:menu-item-delete', kwargs={'item_id':self.menu_item.item_id})
         self.res = self.client.delete(self.del_url)
-        print(f"response:{self.res}")
         self.assertEqual(self.res.status_code, status.HTTP_200_OK)
         self.assertEqual(self.res.data['deleted_by_usr_email'], self.user.email)
         self.assertEqual(self.res.data['item_id'], self.menu_item.item_id)
