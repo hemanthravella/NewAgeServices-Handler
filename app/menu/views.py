@@ -178,6 +178,10 @@ class MenuItemDeleteView(APIView):
                 )
 
             with transaction.atomic():
+                #the following check is for the unit test of atomic check
+                if request.data.get("force_failure"):
+                    raise ValueError("Simulated failure for testing rollback")
+
                 #to make sure both go hand in hand, if one fails, the block fails
                 menu_audit = MenuAudit.objects.create(
                     item_id=item.item_id,
