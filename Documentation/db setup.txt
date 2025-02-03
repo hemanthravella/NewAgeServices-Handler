@@ -25,3 +25,8 @@ CREATE USER 'nas_user'@'localhost' IDENTIFIED BY 'nas_2025';
 GRANT ALL PRIVILEGES ON `NAS_CORE`.* TO 'nas_user'@'localhost';
 FLUSH PRIVILEGES;
 SHOW GRANTS FOR 'nas_user'@'localhost';
+========================================================
+GRANT ALL PRIVILEGES ON *.* TO 'nas_user'@'localhost' WITH GRANT OPTION;
+GRANT CREATE, DROP ON test_nas_core.* TO 'nas_user'@'localhost';
+FLUSH PRIVILEGES;
+SHOW GRANTS FOR 'nas_user'@'localhost';

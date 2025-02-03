@@ -11,8 +11,8 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 import os
 from pathlib import Path
-import pymysql
-pymysql.install_as_MySQLdb()
+# import pymysql
+# pymysql.install_as_MySQLdb()
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -83,15 +83,15 @@ WSGI_APPLICATION = 'app.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'HOST': os.environ.get('DB_HOST'),
-#         'NAME': os.environ.get('DB_NAME'),
-#         'USER': os.environ.get('DB_USER'),
-#         'PASSWORD': os.environ.get('DB_PASS'),
-#     }
-# }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'HOST': os.environ.get('DB_HOST'),
+        'NAME': os.environ.get('DB_NAME'),
+        'USER': os.environ.get('DB_USER'),
+        'PASSWORD': os.environ.get('DB_PASS'),
+    }
+}
 
 # DATABASES = {
 #     'default': {
@@ -104,16 +104,16 @@ WSGI_APPLICATION = 'app.wsgi.application'
 #     }
 # }
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.getenv('DB_NAME', 'NAS_CORE'),  # Database name
-        'USER': os.getenv('DB_USER', 'nas_user'),  # User for MySQL
-        'PASSWORD': os.getenv('DB_PASS', 'nas_2025'),  # Password for MySQL
-        'HOST': '127.0.0.1',
-        'PORT': '3306',  # Default MySQL port
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': os.getenv('DB_NAME', 'NAS_CORE'),  # Database name
+#         'USER': os.getenv('DB_USER', 'nas_user'),  # User for MySQL
+#         'PASSWORD': os.getenv('DB_PASS', 'nas_2025'),  # Password for MySQL
+#         'HOST': '127.0.0.1',
+#         'PORT': '3306',  # Default MySQL port
+#     }
+# }
 
 
 
