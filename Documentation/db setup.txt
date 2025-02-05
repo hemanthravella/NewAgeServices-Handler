@@ -1,0 +1,32 @@
+download the community editon my sql : https://dev.mysql.com/downloads/
+go to setting scroll to bottom and you can see my sql
+go to home directory ls -al and loook for .zshrc(if not found create touch .zshrc)
+open the file using open .zshrc or nano .zshrc
+add the following command to .zshrc
+    export PATH=${PATH}:/usr/local/mysql-9.1.0-macos14-x86_64/bin
+reload .zshrc file ---> source .zshrc
+
+use mysql -u root -p
+brew install pkg-config mysql-client
+
+================================
+pip install --upgrade pip setuptools
+pip install mysql-connector-python
+================================
+
+download mysql workbench from https://dev.mysql.com/downloads/
+
+mysql -u nas_user -p -h 127.0.0.1 -P 3306 NAS_CORE
+
+===========
+List users: SELECT User, Host FROM mysql.user;
+
+CREATE USER 'nas_user'@'localhost' IDENTIFIED BY 'nas_2025';
+GRANT ALL PRIVILEGES ON `NAS_CORE`.* TO 'nas_user'@'localhost';
+FLUSH PRIVILEGES;
+SHOW GRANTS FOR 'nas_user'@'localhost';
+========================================================
+GRANT ALL PRIVILEGES ON *.* TO 'nas_user'@'localhost' WITH GRANT OPTION;
+GRANT CREATE, DROP ON test_nas_core.* TO 'nas_user'@'localhost';
+FLUSH PRIVILEGES;
+SHOW GRANTS FOR 'nas_user'@'localhost';
