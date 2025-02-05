@@ -108,4 +108,5 @@ SELECT * FROM your_table;
 
 docker compose run --rm app sh -c "python manage.py test menu.tests.test_adminuser_menu_items.AdminUserUpdateMenuItemAPI.test_admin_user_updating_item_with_bad_data"
 
+check the postgres running: ps aux | grep postgres
 

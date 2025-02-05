@@ -1,0 +1,1 @@
+Create super user inside the app container if using the docker containers : docker exec -it <app_container_id> sh
