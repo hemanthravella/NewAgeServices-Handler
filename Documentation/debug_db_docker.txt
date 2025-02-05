@@ -1,0 +1,86 @@
+## Debugging PostgreSQL Connection Issues in Docker
+
+### **1. Check If PostgreSQL Container is Running**
+```sh
+docker ps
+```
+If the `db` container is not running, start it:
+```sh
+docker-compose up -d db
+```
+Check logs for errors:
+```sh
+docker logs <db_container_id>
+```
+
+### **2. Verify PostgreSQL is Listening on Port 5432**
+Open a shell inside the PostgreSQL container:
+```sh
+docker exec -it <db_container_id> sh
+```
+Check if PostgreSQL is running:
+```sh
+pg_isready -U devuser -d devdb
+```
+Expected output:
+```
+/var/run/postgresql:5432 - accepting connections
+```
+
+### **3. Confirm That Django Can Reach the Database**
+
+#### **Step 1: Open a Shell Inside the `app` Container**
+```sh
+docker exec -it <app_container_id> sh
+```
+
+#### **Step 2: Try Connecting to PostgreSQL**
+```sh
+nc -zv db 5432
+```
+If the connection **fails**, the app container **cannot reach** the database.
+
+### **4. Check Database Environment Variables in `app`**
+Inside the `app` container, run:
+```sh
+env | grep DB_
+```
+Expected output:
+```
+DB_HOST=db
+DB_NAME=devdb
+DB_USER=devuser
+DB_PASS=changeme
+```
+If `DB_HOST` is missing or set to `localhost`, update `docker-compose.yaml`:
+```yaml
+environment:
+  - DB_HOST=db  # NOT localhost
+```
+Restart the containers:
+```sh
+docker-compose down -v
+docker-compose up --build
+```
+
+### **5. Restart PostgreSQL Service Manually**
+If PostgreSQL is running but Django **still can’t connect**, restart PostgreSQL inside the `db` container:
+```sh
+docker exec -it <db_container_id> sh
+```
+Then inside the container:
+```sh
+pg_ctl restart -D /var/lib/postgresql/data
+```
+
+### **6. If Using macOS, Stop Local PostgreSQL**
+If PostgreSQL is installed locally, it might interfere with Docker:
+```sh
+brew services stop postgresql
+```
+Then restart Docker:
+```sh
+docker-compose down -v
+docker-compose up --build
+```
+
