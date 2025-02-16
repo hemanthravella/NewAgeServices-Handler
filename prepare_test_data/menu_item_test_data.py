@@ -9,7 +9,7 @@ fake = Faker()
 # API endpoint and token
 url = "http://localhost:8000/api/menu/v1/createItem"
 headers = {
-    "Authorization": "Token 0200afb75f14344416c0586e326da81b49cbc09d",
+    "Authorization": "Token 3f63cd352e920a3d10bcc17c02df938e20e39e45",
     "Content-Type": "application/json",
 }
 

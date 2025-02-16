@@ -1,4 +1,4 @@
-"""This  holds the custom models for custom user creationn"""
+"""This holds the custom models for custom user creation"""
 from django.utils import timezone
 
 from django.contrib.auth.base_user import BaseUserManager

@@ -6,6 +6,6 @@ from . import models
 class MenuAdmin(admin.ModelAdmin):  # Inherit from admin.ModelAdmin
     """Admin panel for improved menu view"""
     ordering = ('item_name',)
-    list_display = ('item_name', 'menu_type', 'is_available')
+    list_display = ('item_name', 'menu_type', 'is_available', 'item_upd_usr_email')
 
 admin.site.register(models.MenuItem, MenuAdmin)
