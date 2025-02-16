@@ -98,7 +98,7 @@ class OrderItem(models.Model):
     quantity = models.PositiveIntegerField(
         default=1,
         help_text="Quantity of the order placed for the Menu item."
-    ),
+    )
     item_name = models.CharField(
         max_length=50,
         help_text="Name of the menu item (max 50 characters)."

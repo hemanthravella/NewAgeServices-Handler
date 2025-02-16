@@ -2,6 +2,18 @@ There two models for the Menu as of now.
 Currently it can differentiate the orders whether its from restaurant or Online.
 It has the following:
 Get -> Displays the list of items in the order with total and each item cost
-Post -> to create the order
+Post -> to create the order -> {
+  "order_origin": "online",
+  "order_items": [
+    {
+      "item_id": 1,
+      "quantity": 2
+    },
+    {
+      "item_id": 3,
+      "quantity": 1
+    }
+  ]
+}
 Patch -> to update the order (Min of Staff user permission can do it)
 Delete -> to delete the order ((Min of Staff user permission can do it))
