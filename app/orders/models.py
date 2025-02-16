@@ -1,12 +1,13 @@
 """This contains the models related to the orders placed"""
-from decimal import Decimal
 
 from django.db import models
 from user.models import User
 from menu.models import MenuItem
 
+
 class Order(models.Model):
     """Tracks customer orders"""
+
     STATUS_CHOICES = [
         ('pending', 'Pending'),
         ('processing', 'Processing'),
@@ -44,7 +45,7 @@ class Order(models.Model):
         default=0.00,
         help_text="total_cost_of_the_order"
     )
-    order_last_upd_ts =  models.DateTimeField(
+    order_last_upd_ts = models.DateTimeField(
         auto_now=True,
         help_text="Timestamp when the order is last updated."
     )
@@ -64,7 +65,7 @@ class Order(models.Model):
     )
 
     def __str__(self):
-        return f"Order {self.order_id} by {self.customer_id.first_name} : {self.status} "
+        return self.order_id
 
     def set_order_origin(self, user):
         """To set the origin manually based on logged in User as it is None"""
@@ -76,7 +77,7 @@ class Order(models.Model):
     def save(self, *args, **kwargs):
         """Override save to set the order origin when saving the order"""
         if not self.order_origin:
-            #If at all order origin is empty, set it with customer first_name
+            # If at all order origin is empty, set it with customer first_name
             self.set_order_origin(self.customer_id.first_name)
         super().save(*args, **kwargs)
 
@@ -86,7 +87,7 @@ class OrderItem(models.Model):
     order = models.ForeignKey(
         Order,
         on_delete=models.CASCADE,
-        related_name="order_items",
+        related_name="order_items",  # This allows reverse access to order_items from Order
         help_text="Reference to the order."
     )
     menu_item = models.ForeignKey(
@@ -97,6 +98,10 @@ class OrderItem(models.Model):
     quantity = models.PositiveIntegerField(
         default=1,
         help_text="Quantity of the order placed for the Menu item."
+    ),
+    item_name = models.CharField(
+        max_length=50,
+        help_text="Name of the menu item (max 50 characters)."
     )
     item_price = models.DecimalField(
         max_digits=6,
@@ -111,11 +116,16 @@ class OrderItem(models.Model):
 
     def save(self, *args, **kwargs):
         """To manually update the item price"""
+        if not self.item_name:
+            self.item_name = self.menu_item.item_name
+
+        if not self.item_price:
+            # Set item_price from the MenuItem.item_cost if not provided
+            self.item_price = self.menu_item.item_cost
+
         if self.item_price is not None and self.quantity is not None:
             self.item_total = self.item_price * self.quantity
         else:
             self.item_total = 0.00
-        
+
         super().save(*args, **kwargs)
-
-

@@ -1,0 +1,7 @@
+There two models for the Menu as of now.
+Currently it can differentiate the orders whether its from restaurant or Online.
+It has the following:
+Get -> Displays the list of items in the order with total and each item cost
+Post -> to create the order
+Patch -> to update the order (Min of Staff user permission can do it)
+Delete -> to delete the order ((Min of Staff user permission can do it))
